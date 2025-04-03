@@ -10,55 +10,123 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
-    <title>Freeos Lift Conversion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <title>FREEOS to LIFT Converter</title>
   </head>
 
-  <body>
-    <div class="container">
-      <div class="content">
-        <img src="dfinity_proton.JPG" alt="dfinity proton" />
+  <body class="dark-theme">
+    <div class="container py-5">
+      <header class="text-center mb-5">
+        <!-- Add your logo here - replace 'your-logo.png' with your actual file name -->
+        <img src="/assets/your-logo.png" alt="Converter Logo" class="app-logo mb-4" />
+        <h1 class="display-5 fw-bold">FREEOS to LIFT Converter</h1>
+        <p class="lead text-muted">Convert FREEOS tokens to LIFT in the upcoming SNS Token Launch for Lift Cash</p>
+      </header>
 
-        <div>
-          <button id="dfinitySignInBtn" class="btn btn-primary">
-            IC Sign In
-          </button>
-        </div>
-        <div class="response" id="principal_id"></div>
-
-        <br />
-
-        <div>
-          <button id="protonSignInBtn" class="btn btn-primary">
-            Proton Sign In
-          </button>
-        </div>
-        <div class="response" id="proton_account"></div>
-
-        <button id="showVariablesBtn" style="display: none">
-          Show Variables
-        </button>
-
-        <br />
-
-        <div class="functions" id="functionTable" style="display: none">
-          <label for="amountFreeos">Amount of Freeos to convert:</label>
-          <input
-            type="number"
-            id="amountFreeos"
-            name="amountFreeos"
-            step="1"
-            min="0"
-          />
-
-          <div id="convertRow">
-            <div>
-              <button id="convertBtn" class="btn btn-primary">Convert</button>
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+              <h5 class="card-title mb-0">Connect Your Accounts</h5>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="d-grid">
+                    <button id="dfinitySignInBtn" class="btn btn-primary btn-lg">
+                      <i class="fas fa-plug me-2"></i>Connect Internet Computer
+                    </button>
+                  </div>
+                  <div class="mt-2 text-center response-container">
+                    <span class="badge bg-light text-dark" id="principal_id"></span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-grid">
+                    <button id="protonSignInBtn" class="btn btn-success btn-lg">
+                      <i class="fas fa-plug me-2"></i>Connect XPR Network
+                    </button>
+                  </div>
+                  <div class="mt-2 text-center response-container">
+                    <span class="badge bg-light text-dark" id="proton_account"></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- Balance Display -->
+          <div class="card shadow-sm mb-4" id="balanceCard" style="display: none;">
+            <div class="card-header bg-light">
+              <h5 class="card-title mb-0">Your Balances</h5>
+            </div>
+            <div class="card-body">
+              <div class="row text-center">
+                <div class="col-md-6">
+                  <div class="balance-box">
+                    <h6>XPR Network Balance</h6>
+                    <h2 id="proton_balance">0</h2>
+                    <span class="text-muted">FREEOS</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="balance-box">
+                    <h6>Internet Computer Balance</h6>
+                    <h2 id="ic_balance">0</h2>
+                    <span class="text-muted">LIFT (pending)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Conversion Form -->
+          <div class="card shadow-sm" id="functionTable" style="display: none;">
+            <div class="card-header bg-light">
+              <h5 class="card-title mb-0">Convert FREEOS to LIFT</h5>
+            </div>
+            <div class="card-body">
+              <form>
+                <div class="mb-3">
+                  <label for="amountFreeos" class="form-label">Amount of FREEOS to convert to LIFT:</label>
+                  <div class="input-group">
+                    <input
+                      type="number"
+                      id="amountFreeos"
+                      name="amountFreeos"
+                      class="form-control form-control-lg"
+                      step="1"
+                      min="0"
+                      placeholder="Enter amount"
+                    />
+                    <span class="input-group-text">FREEOS</span>
+                  </div>
+                  <div class="form-text">Your FREEOS will be converted to LIFT at a 1:1 ratio in the upcoming SNS launch.</div>
+                </div>
+                
+                <div class="d-grid">
+                  <button id="convertBtn" class="btn btn-primary btn-lg">
+                    <i class="fas fa-exchange-alt me-2"></i>Convert to LIFT
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <button id="showVariablesBtn" class="btn btn-sm btn-outline-secondary mt-3" style="display: none">
+            Show Variables
+          </button>
         </div>
       </div>
-      <!--  end of container -->
+      
+      <footer class="text-center mt-5">
+        <p class="text-muted small">© 2025 FREEOS to LIFT Converter. Powered by Internet Computer & XPR Network.</p>
+      </footer>
     </div>
+    
     <script type="module" src="/src/main.js"></script>
     <script type="module" src="/src/bootstrap.bundle.min.js"></script>
   </body>

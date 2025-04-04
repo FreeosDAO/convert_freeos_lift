@@ -40,24 +40,60 @@ If you encounter any issues or have questions, please contact support at:
 support@example.com
 `;
 
-// This file contains placeholder content for the images that will be used in the help page
+// This file contains the images used in the help page
 export const manualImages = [
   {
     id: 'connect-wallet',
-    src: '/assets/manual/connect-wallet.png', // This path will be populated when images are added
+    src: '/assets/manual/freeos_lift_step1.png',
     alt: 'Connecting your XPR Network wallet',
     caption: 'Step 1: Click the Connect XPR Network button to link your wallet'
   },
   {
-    id: 'nns-principal',
-    src: '/assets/manual/nns-principal.png', // This path will be populated when images are added
-    alt: 'Getting your NNS Principal ID',
-    caption: 'Step 2: Copy your Principal ID from the NNS App profile section'
+    id: 'wallet-dialog',
+    src: '/assets/manual/freeos_lift_step2.png',
+    alt: 'XPR Network wallet connection dialog',
+    caption: 'Step 2: Scan the QR code with your wallet app or click Open Wallet'
   },
   {
-    id: 'convert-tokens',
-    src: '/assets/manual/convert-tokens.png', // This path will be populated when images are added
-    alt: 'Converting FREEOS to LIFT tokens',
-    caption: 'Step 3: Enter the amount of FREEOS to convert and confirm all details'
+    id: 'connected-wallet',
+    src: '/assets/manual/freeos_lift_step3.png',
+    alt: 'Successfully connected to XPR Network',
+    caption: 'Step 3: After connecting, you\'ll see your account name and balance'
+  },
+  {
+    id: 'nns-instructions',
+    src: '/assets/manual/freeos_lift_step3.png',
+    alt: 'NNS Principal ID instructions',
+    caption: 'Step 4: Follow instructions to get your NNS Principal ID'
+  },
+  {
+    id: 'principal-input',
+    src: '/assets/manual/freeos_lift_step4.png',
+    alt: 'Entering your NNS Principal ID',
+    caption: 'Step 5: Paste your NNS Principal ID and verify it'
+  },
+  {
+    id: 'conversion-form',
+    src: '/assets/manual/freeos_lift_step5.png',
+    alt: 'FREEOS to LIFT conversion form',
+    caption: 'Step 6: Enter amount to convert, check confirmation boxes and click Convert'
+  },
+  {
+    id: 'confirm-transaction',
+    src: '/assets/manual/freeos_lift_step6.png',
+    alt: 'Confirming the conversion details',
+    caption: 'Step 7: Double-check all details before proceeding'
+  },
+  {
+    id: 'wallet-signing',
+    src: '/assets/manual/freeos_lift_step7.png',
+    alt: 'Wallet transaction signing request',
+    caption: 'Step 8: Approve the transaction in your XPR Network wallet'
+  },
+  {
+    id: 'success-message',
+    src: '/assets/manual/freeos_lift_step8.png',
+    alt: 'Successful transaction confirmation',
+    caption: 'Step 9: Transaction complete! Your FREEOS tokens have been submitted for conversion'
   }
 ];

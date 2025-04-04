@@ -672,14 +672,33 @@ function renderHelpPage(component) {
   innerContainer.className = 'container py-4';
   container.appendChild(innerContainer);
   
-  // Create row
+  // Add page title
+  const titleRow = document.createElement('div');
+  titleRow.className = 'row mb-4';
+  innerContainer.appendChild(titleRow);
+  
+  const titleCol = document.createElement('div');
+  titleCol.className = 'col-12 text-center';
+  titleRow.appendChild(titleCol);
+  
+  const pageTitle = document.createElement('h2');
+  pageTitle.className = 'mb-3';
+  pageTitle.textContent = 'FREEOS to LIFT Converter Guide';
+  titleCol.appendChild(pageTitle);
+  
+  const pageSubtitle = document.createElement('p');
+  pageSubtitle.className = 'text-muted';
+  pageSubtitle.textContent = 'A complete step-by-step guide for converting your FREEOS tokens to LIFT';
+  titleCol.appendChild(pageSubtitle);
+
+  // Create content row
   const row = document.createElement('div');
   row.className = 'row';
   innerContainer.appendChild(row);
   
   // Left column - Manual content
   const leftCol = document.createElement('div');
-  leftCol.className = 'col-lg-8';
+  leftCol.className = 'col-lg-5';
   row.appendChild(leftCol);
   
   const leftCard = document.createElement('div');
@@ -688,7 +707,7 @@ function renderHelpPage(component) {
   
   const leftCardHeader = document.createElement('div');
   leftCardHeader.className = 'card-header bg-light';
-  leftCardHeader.innerHTML = '<h5 class="card-title mb-0">FREEOS to LIFT Converter Guide</h5>';
+  leftCardHeader.innerHTML = '<h5 class="card-title mb-0">Instructions</h5>';
   leftCard.appendChild(leftCardHeader);
   
   const leftCardBody = document.createElement('div');
@@ -700,9 +719,71 @@ function renderHelpPage(component) {
   manualContent.innerHTML = marked.parse(component.manualContent);
   leftCardBody.appendChild(manualContent);
   
-  // Right column - Images and resources
+  // Quick resources section below manual content
+  const resourcesCard = document.createElement('div');
+  resourcesCard.className = 'card shadow-sm';
+  leftCol.appendChild(resourcesCard);
+  
+  const resourcesCardHeader = document.createElement('div');
+  resourcesCardHeader.className = 'card-header bg-light';
+  resourcesCardHeader.innerHTML = '<h5 class="card-title mb-0">Quick Resources</h5>';
+  resourcesCard.appendChild(resourcesCardHeader);
+  
+  const resourcesCardBody = document.createElement('div');
+  resourcesCardBody.className = 'card-body';
+  resourcesCard.appendChild(resourcesCardBody);
+  
+  const resourcesList = document.createElement('ul');
+  resourcesList.className = 'list-group list-group-flush';
+  resourcesCardBody.appendChild(resourcesList);
+  
+  // Add NNS App resource link
+  const nnsItem = document.createElement('li');
+  nnsItem.className = 'list-group-item bg-transparent';
+  nnsItem.innerHTML = `
+    <a href="https://nns.ic0.app/" target="_blank" rel="noopener noreferrer" class="resource-link">
+      <i class="fas fa-external-link-alt me-2"></i>
+      NNS App
+    </a>
+  `;
+  resourcesList.appendChild(nnsItem);
+  
+  // Add Lift Cash Website link
+  const liftItem = document.createElement('li');
+  liftItem.className = 'list-group-item bg-transparent';
+  liftItem.innerHTML = `
+    <a href="https://lift.cash/" target="_blank" rel="noopener noreferrer" class="resource-link">
+      <i class="fas fa-external-link-alt me-2"></i>
+      Lift Cash Website
+    </a>
+  `;
+  resourcesList.appendChild(liftItem);
+  
+  // Add FREEOS Website link
+  const freesosItem = document.createElement('li');
+  freesosItem.className = 'list-group-item bg-transparent';
+  freesosItem.innerHTML = `
+    <a href="https://freeos.io/" target="_blank" rel="noopener noreferrer" class="resource-link">
+      <i class="fas fa-external-link-alt me-2"></i>
+      FREEOS Website
+    </a>
+  `;
+  resourcesList.appendChild(freesosItem);
+  
+  // Add XPR Network link
+  const xprItem = document.createElement('li');
+  xprItem.className = 'list-group-item bg-transparent';
+  xprItem.innerHTML = `
+    <a href="https://xprnetwork.org/" target="_blank" rel="noopener noreferrer" class="resource-link">
+      <i class="fas fa-external-link-alt me-2"></i>
+      XPR Network
+    </a>
+  `;
+  resourcesList.appendChild(xprItem);
+  
+  // Right column - Images section (larger)
   const rightCol = document.createElement('div');
-  rightCol.className = 'col-lg-4';
+  rightCol.className = 'col-lg-7';
   row.appendChild(rightCol);
   
   // Images section
@@ -728,9 +809,17 @@ function renderHelpPage(component) {
     img.src = image.src;
     img.alt = image.alt;
     img.className = 'img-fluid rounded mb-2';
+    img.loading = 'lazy'; // Add lazy loading for better performance
     img.onerror = function() {
       this.src = '/assets/your-logo.png';
       this.style.opacity = '0.5';
+      this.title = 'Image could not be loaded';
+    };
+    
+    // Add click handler to open image in full view
+    img.style.cursor = 'pointer';
+    img.onclick = function() {
+      window.open(this.src, '_blank');
     };
     
     const caption = document.createElement('p');
@@ -742,46 +831,15 @@ function renderHelpPage(component) {
     imagesCardBody.appendChild(imageContainer);
   });
   
-  // Add support section
+  // Add support section below images
   const supportAlert = document.createElement('div');
   supportAlert.className = 'alert alert-info';
   supportAlert.setAttribute('role', 'alert');
   supportAlert.innerHTML = `
     <i class="fas fa-info-circle me-2"></i>
-    <small>
-      Having trouble? Contact our support team at <a href="mailto:support@example.com" class="alert-link">support@example.com</a>
-    </small>
+    Having trouble? Contact our support team at <a href="mailto:support@example.com" class="alert-link">support@example.com</a>
   `;
-  imagesCardBody.appendChild(supportAlert);
-  
-  // Add resources section
-  const resourcesCard = document.createElement('div');
-  resourcesCard.className = 'card shadow-sm';
-  rightCol.appendChild(resourcesCard);
-  
-  const resourcesCardHeader = document.createElement('div');
-  resourcesCardHeader.className = 'card-header bg-light';
-  resourcesCardHeader.innerHTML = '<h5 class="card-title mb-0">Quick Resources</h5>';
-  resourcesCard.appendChild(resourcesCardHeader);
-  
-  const resourcesCardBody = document.createElement('div');
-  resourcesCardBody.className = 'card-body';
-  resourcesCard.appendChild(resourcesCardBody);
-  
-  const resourcesList = document.createElement('ul');
-  resourcesList.className = 'list-group list-group-flush';
-  resourcesCardBody.appendChild(resourcesList);
-  
-  // Add NNS App resource link
-  const nnsItem = document.createElement('li');
-  nnsItem.className = 'list-group-item bg-transparent';
-  nnsItem.innerHTML = `
-    <a href="https://nns.ic0.app/" target="_blank" rel="noopener noreferrer" class="resource-link">
-      <i class="fas fa-external-link-alt me-2"></i>
-      NNS App
-    </a>
-  `;
-  resourcesList.appendChild(nnsItem);
+  rightCol.appendChild(supportAlert);
   
   // Add a back button to return to main view
   const backButtonContainer = document.createElement('div');

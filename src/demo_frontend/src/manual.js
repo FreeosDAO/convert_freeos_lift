@@ -62,38 +62,32 @@ export const manualImages = [
   },
   {
     id: 'nns-instructions',
-    src: '/assets/manual/freeos_lift_step3.png',
+    src: '/assets/manual/freeos_lift_step4.png',
     alt: 'NNS Principal ID instructions',
     caption: 'Step 4: Follow instructions to get your NNS Principal ID'
   },
   {
     id: 'principal-input',
-    src: '/assets/manual/freeos_lift_step4.png',
+    src: '/assets/manual/freeos_lift_step5.png',
     alt: 'Entering your NNS Principal ID',
     caption: 'Step 5: Paste your NNS Principal ID and verify it'
   },
   {
     id: 'conversion-form',
-    src: '/assets/manual/freeos_lift_step5.png',
+    src: '/assets/manual/freeos_lift_step6.png',
     alt: 'FREEOS to LIFT conversion form',
     caption: 'Step 6: Enter amount to convert, check confirmation boxes and click Convert'
   },
   {
     id: 'confirm-transaction',
-    src: '/assets/manual/freeos_lift_step6.png',
+    src: '/assets/manual/freeos_lift_step7.png',
     alt: 'Confirming the conversion details',
     caption: 'Step 7: Double-check all details before proceeding'
   },
   {
     id: 'wallet-signing',
-    src: '/assets/manual/freeos_lift_step7.png',
+    src: '/assets/manual/freeos_lift_step8.png',
     alt: 'Wallet transaction signing request',
     caption: 'Step 8: Approve the transaction in your XPR Network wallet'
-  },
-  {
-    id: 'success-message',
-    src: '/assets/manual/freeos_lift_step8.png',
-    alt: 'Successful transaction confirmation',
-    caption: 'Step 9: Transaction complete! Your FREEOS tokens have been submitted for conversion'
   }
 ];

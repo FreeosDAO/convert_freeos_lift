@@ -14,10 +14,38 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/styles/demostyles.css">
     <title>FREEOS to LIFT Converter</title>
   </head>
 
   <body class="dark-theme">
+    <!-- Inline critical CSS as fallback in case external CSS fails to load -->
+    <style>
+      :root {
+        --dark-bg: #121212;
+        --card-bg: #1e1e1e;
+        --card-header: #252525;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --accent-color: #EB5528;
+      }
+      body {
+        background-color: var(--dark-bg);
+        color: var(--text-primary);
+        font-family: 'Inter', sans-serif;
+      }
+      .card {
+        background-color: var(--card-bg);
+        border-color: #2a2a2a;
+      }
+      .card-header {
+        background-color: var(--card-header);
+      }
+      .btn-primary, .btn-success {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+      }
+    </style>
     <div class="container py-5">
       <header class="text-center mb-5">
         <!-- Add your logo here - replace 'your-logo.png' with your actual file name -->
@@ -87,7 +115,7 @@
               <h5 class="card-title mb-0">Convert FREEOS to LIFT</h5>
             </div>
             <div class="card-body">
-              <form>
+              <form id="convertForm" onsubmit="event.preventDefault(); return false;">
                 <div class="mb-3">
                   <label for="amountFreeos" class="form-label">Amount of FREEOS to convert to LIFT:</label>
                   <div class="input-group">
@@ -96,17 +124,17 @@
                       id="amountFreeos"
                       name="amountFreeos"
                       class="form-control form-control-lg"
-                      step="1"
-                      min="0"
-                      placeholder="Enter amount"
+                      step="any"
+                      min="0.0001"
+                      placeholder="Enter amount (e.g. 5 or 10.5)"
                     />
                     <span class="input-group-text">FREEOS</span>
                   </div>
-                  <div class="form-text">Your FREEOS will be converted to LIFT at a 1:1 ratio in the upcoming SNS launch.</div>
+                  <div class="form-text">Simply enter a whole number or decimal value (e.g. 5 or 10.5). The system will automatically format with the required decimal precision.</div>
                 </div>
                 
                 <div class="d-grid">
-                  <button id="convertBtn" class="btn btn-primary btn-lg">
+                  <button type="button" id="convertBtn" class="btn btn-primary btn-lg">
                     <i class="fas fa-exchange-alt me-2"></i>Convert to LIFT
                   </button>
                 </div>

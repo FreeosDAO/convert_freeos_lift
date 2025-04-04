@@ -721,7 +721,7 @@ function renderHelpPage(component) {
   leftCol.appendChild(leftCard);
   
   const leftCardHeader = document.createElement('div');
-  leftCardHeader.className = 'card-header bg-light';
+  leftCardHeader.className = 'card-header';
   leftCardHeader.innerHTML = '<h5 class="card-title mb-0">Written Instructions</h5>';
   leftCard.appendChild(leftCardHeader);
   
@@ -746,7 +746,7 @@ function renderHelpPage(component) {
   leftCol.appendChild(resourcesCard);
   
   const resourcesCardHeader = document.createElement('div');
-  resourcesCardHeader.className = 'card-header bg-light';
+  resourcesCardHeader.className = 'card-header';
   resourcesCardHeader.innerHTML = '<h5 class="card-title mb-0">Quick Resources</h5>';
   resourcesCard.appendChild(resourcesCardHeader);
   
@@ -813,7 +813,7 @@ function renderHelpPage(component) {
   rightCol.appendChild(imagesCard);
   
   const imagesCardHeader = document.createElement('div');
-  imagesCardHeader.className = 'card-header bg-light';
+  imagesCardHeader.className = 'card-header';
   imagesCardHeader.innerHTML = '<h5 class="card-title mb-0">Visual Instructions</h5>';
   imagesCard.appendChild(imagesCardHeader);
   

@@ -707,12 +707,18 @@ function renderHelpPage(component) {
   
   const leftCardHeader = document.createElement('div');
   leftCardHeader.className = 'card-header bg-light';
-  leftCardHeader.innerHTML = '<h5 class="card-title mb-0">Instructions</h5>';
+  leftCardHeader.innerHTML = '<h5 class="card-title mb-0">Written Instructions</h5>';
   leftCard.appendChild(leftCardHeader);
   
   const leftCardBody = document.createElement('div');
   leftCardBody.className = 'card-body';
   leftCard.appendChild(leftCardBody);
+  
+  // Add intro text
+  const writtenIntro = document.createElement('p');
+  writtenIntro.className = 'text-muted mb-4';
+  writtenIntro.textContent = 'Follow these step-by-step instructions to convert your FREEOS tokens to LIFT.';
+  leftCardBody.appendChild(writtenIntro);
   
   const manualContent = document.createElement('div');
   manualContent.className = 'manual-content';
@@ -793,7 +799,7 @@ function renderHelpPage(component) {
   
   const imagesCardHeader = document.createElement('div');
   imagesCardHeader.className = 'card-header bg-light';
-  imagesCardHeader.innerHTML = '<h5 class="card-title mb-0">Visual Guide</h5>';
+  imagesCardHeader.innerHTML = '<h5 class="card-title mb-0">Visual Instructions</h5>';
   imagesCard.appendChild(imagesCardHeader);
   
   const imagesCardBody = document.createElement('div');

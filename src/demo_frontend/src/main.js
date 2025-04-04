@@ -7,6 +7,7 @@ import ProtonWebSDK from '@proton/web-sdk';
 import { JsonRpc, Api } from 'eosjs';
 import { termsAndConditionsText } from './termsandconditions.js';
 import { marked } from 'marked';
+import HelpPage from './HelpPage.js';
 
 let principal = '';
 let proton_account = '';
@@ -87,6 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Set up Terms and Conditions
   setupTermsAndConditions();
+  
+  // Initialize the Help Page
+  initializeHelpPage();
 });
 
 function setupEventHandlers() {
@@ -130,6 +134,9 @@ function setupEventHandlers() {
   
   // Nav bar connect button
   document.getElementById('navConnectBtn')?.addEventListener('click', handleProtonSignIn);
+  
+  // Nav bar help button
+  document.getElementById('navHelpBtn')?.addEventListener('click', toggleHelpPage);
   
   // Convert button
   document.getElementById('convertBtn')?.addEventListener('click', handleConvertButtonClick);
@@ -623,4 +630,170 @@ function showVariables() {
       proton_account +
       ']'
   );
+}
+
+// Help page handling functions
+function initializeHelpPage() {
+  // Create the help page component
+  const helpPageElement = HelpPage();
+  
+  // Convert the JSX-like object to HTML and add it to the help container
+  document.getElementById('helpPageContainer').innerHTML = '';
+  document.getElementById('helpPageContainer').appendChild(renderHelpPage(helpPageElement));
+}
+
+// Function to toggle between main content and help page
+function toggleHelpPage() {
+  const mainContent = document.getElementById('mainContent');
+  const helpPageContainer = document.getElementById('helpPageContainer');
+  const helpBtn = document.getElementById('navHelpBtn');
+  
+  if (helpPageContainer.style.display === 'none') {
+    // Show help page, hide main content
+    mainContent.style.display = 'none';
+    helpPageContainer.style.display = 'block';
+    helpBtn.innerHTML = '<i class="fas fa-home me-1"></i>Home';
+  } else {
+    // Show main content, hide help page
+    mainContent.style.display = 'block';
+    helpPageContainer.style.display = 'none';
+    helpBtn.innerHTML = '<i class="fas fa-question-circle me-1"></i>Help';
+  }
+}
+
+// Helper function to convert JSX-like component to DOM elements
+function renderHelpPage(component) {
+  // Create a container div
+  const container = document.createElement('div');
+  container.className = 'help-page';
+  
+  // Add container with bootstrap classes
+  const innerContainer = document.createElement('div');
+  innerContainer.className = 'container py-4';
+  container.appendChild(innerContainer);
+  
+  // Create row
+  const row = document.createElement('div');
+  row.className = 'row';
+  innerContainer.appendChild(row);
+  
+  // Left column - Manual content
+  const leftCol = document.createElement('div');
+  leftCol.className = 'col-lg-8';
+  row.appendChild(leftCol);
+  
+  const leftCard = document.createElement('div');
+  leftCard.className = 'card shadow-sm mb-4';
+  leftCol.appendChild(leftCard);
+  
+  const leftCardHeader = document.createElement('div');
+  leftCardHeader.className = 'card-header bg-light';
+  leftCardHeader.innerHTML = '<h5 class="card-title mb-0">FREEOS to LIFT Converter Guide</h5>';
+  leftCard.appendChild(leftCardHeader);
+  
+  const leftCardBody = document.createElement('div');
+  leftCardBody.className = 'card-body';
+  leftCard.appendChild(leftCardBody);
+  
+  const manualContent = document.createElement('div');
+  manualContent.className = 'manual-content';
+  manualContent.innerHTML = marked.parse(component.manualContent);
+  leftCardBody.appendChild(manualContent);
+  
+  // Right column - Images and resources
+  const rightCol = document.createElement('div');
+  rightCol.className = 'col-lg-4';
+  row.appendChild(rightCol);
+  
+  // Images section
+  const imagesCard = document.createElement('div');
+  imagesCard.className = 'card shadow-sm mb-4';
+  rightCol.appendChild(imagesCard);
+  
+  const imagesCardHeader = document.createElement('div');
+  imagesCardHeader.className = 'card-header bg-light';
+  imagesCardHeader.innerHTML = '<h5 class="card-title mb-0">Visual Guide</h5>';
+  imagesCard.appendChild(imagesCardHeader);
+  
+  const imagesCardBody = document.createElement('div');
+  imagesCardBody.className = 'card-body';
+  imagesCard.appendChild(imagesCardBody);
+  
+  // Add each image
+  component.manualImages.forEach(image => {
+    const imageContainer = document.createElement('div');
+    imageContainer.className = 'manual-image-container mb-4';
+    
+    const img = document.createElement('img');
+    img.src = image.src;
+    img.alt = image.alt;
+    img.className = 'img-fluid rounded mb-2';
+    img.onerror = function() {
+      this.src = '/assets/your-logo.png';
+      this.style.opacity = '0.5';
+    };
+    
+    const caption = document.createElement('p');
+    caption.className = 'image-caption text-muted small';
+    caption.textContent = image.caption;
+    
+    imageContainer.appendChild(img);
+    imageContainer.appendChild(caption);
+    imagesCardBody.appendChild(imageContainer);
+  });
+  
+  // Add support section
+  const supportAlert = document.createElement('div');
+  supportAlert.className = 'alert alert-info';
+  supportAlert.setAttribute('role', 'alert');
+  supportAlert.innerHTML = `
+    <i class="fas fa-info-circle me-2"></i>
+    <small>
+      Having trouble? Contact our support team at <a href="mailto:support@example.com" class="alert-link">support@example.com</a>
+    </small>
+  `;
+  imagesCardBody.appendChild(supportAlert);
+  
+  // Add resources section
+  const resourcesCard = document.createElement('div');
+  resourcesCard.className = 'card shadow-sm';
+  rightCol.appendChild(resourcesCard);
+  
+  const resourcesCardHeader = document.createElement('div');
+  resourcesCardHeader.className = 'card-header bg-light';
+  resourcesCardHeader.innerHTML = '<h5 class="card-title mb-0">Quick Resources</h5>';
+  resourcesCard.appendChild(resourcesCardHeader);
+  
+  const resourcesCardBody = document.createElement('div');
+  resourcesCardBody.className = 'card-body';
+  resourcesCard.appendChild(resourcesCardBody);
+  
+  const resourcesList = document.createElement('ul');
+  resourcesList.className = 'list-group list-group-flush';
+  resourcesCardBody.appendChild(resourcesList);
+  
+  // Add NNS App resource link
+  const nnsItem = document.createElement('li');
+  nnsItem.className = 'list-group-item bg-transparent';
+  nnsItem.innerHTML = `
+    <a href="https://nns.ic0.app/" target="_blank" rel="noopener noreferrer" class="resource-link">
+      <i class="fas fa-external-link-alt me-2"></i>
+      NNS App
+    </a>
+  `;
+  resourcesList.appendChild(nnsItem);
+  
+  // Add a back button to return to main view
+  const backButtonContainer = document.createElement('div');
+  backButtonContainer.className = 'text-center mt-4';
+  
+  const backButton = document.createElement('button');
+  backButton.className = 'btn btn-outline-light';
+  backButton.innerHTML = '<i class="fas fa-arrow-left me-2"></i>Return to Converter';
+  backButton.onclick = toggleHelpPage;
+  
+  backButtonContainer.appendChild(backButton);
+  innerContainer.appendChild(backButtonContainer);
+  
+  return container;
 }

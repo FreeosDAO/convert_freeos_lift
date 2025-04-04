@@ -175,11 +175,15 @@
           <button id="navConnectBtn" class="btn btn-sm btn-outline-light ms-2">
             <i class="fas fa-plug me-1"></i>Connect
           </button>
+          <button id="navHelpBtn" class="btn btn-sm btn-outline-light ms-2">
+            <i class="fas fa-question-circle me-1"></i>Help
+          </button>
         </div>
       </div>
     </nav>
     
-    <div class="container py-5">
+    <div id="mainContent" class="container py-5">
+      <!-- Main content wrapper -->
       <header class="text-center mb-5">
         <!-- Add your logo here - replace 'your-logo.png' with your actual file name -->
         <img src="/assets/your-logo.png" alt="Converter Logo" class="app-logo mb-4" />
@@ -347,6 +351,9 @@
         <p class="text-muted small">© 2025 FREEOS to LIFT Converter. Powered by Internet Computer & XPR Network.</p>
       </footer>
     </div>
+    
+    <!-- Help Page Container -->
+    <div id="helpPageContainer" class="container py-5" style="display: none;"></div>
     
     <script type="module" src="/src/main.js"></script>
     <script type="module" src="/src/bootstrap.bundle.min.js"></script>

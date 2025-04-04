@@ -128,6 +128,9 @@ function setupEventHandlers() {
   // Proton sign in button
   document.getElementById('protonSignInBtn')?.addEventListener('click', handleProtonSignIn);
   
+  // Nav bar connect button
+  document.getElementById('navConnectBtn')?.addEventListener('click', handleProtonSignIn);
+  
   // Convert button
   document.getElementById('convertBtn')?.addEventListener('click', handleConvertButtonClick);
   
@@ -167,7 +170,14 @@ async function handleProtonSignIn() {
 
     if (session) {
       proton_account = session.auth.actor;
+      
+      // Update both places that show the account name
       document.getElementById('proton_account').innerText = session.auth.actor;
+      document.getElementById('nav_proton_account').innerText = session.auth.actor;
+      
+      // Show account info in navbar
+      document.getElementById('navBarAccountInfo').style.display = 'flex';
+      document.getElementById('navConnectBtn').style.display = 'none';
         
       // Show balance card and NNS instructions when logged into Proton
       document.getElementById('balanceCard').style.display = 'block';
@@ -430,16 +440,27 @@ async function updateBalances() {
     // Store previous values to check for changes
     const prevProtonBalance = document.getElementById('proton_balance').innerText;
     
-    // Update display
+    // Update display in both locations
     document.getElementById('proton_balance').innerText = proton_balance_str;
+    document.getElementById('nav_proton_balance').innerText = proton_balance_str;
     
     // Add highlight animation if values changed
     if (prevProtonBalance !== proton_balance_str) {
+      // Highlight main balance box
       const protonBalanceBox = document.getElementById('proton_balance').closest('.balance-box');
       protonBalanceBox.classList.remove('highlight'); 
       // Force DOM reflow
       void protonBalanceBox.offsetWidth;
       protonBalanceBox.classList.add('highlight');
+      
+      // Highlight navbar balance
+      const navBalanceBadge = document.getElementById('nav_proton_balance').closest('.balance-badge');
+      navBalanceBadge.style.transition = 'background-color 0.5s';
+      navBalanceBadge.style.backgroundColor = 'rgba(235, 85, 40, 0.3)';
+      
+      setTimeout(() => {
+        navBalanceBadge.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+      }, 1500);
     }
     
   } catch (error) {

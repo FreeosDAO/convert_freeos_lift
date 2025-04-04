@@ -28,11 +28,13 @@
         --text-primary: #ffffff;
         --text-secondary: #b0b0b0;
         --accent-color: #EB5528;
+        --navbar-height: 60px;
       }
       body {
         background-color: var(--dark-bg);
         color: var(--text-primary);
         font-family: 'Inter', sans-serif;
+        padding-top: var(--navbar-height);
       }
       .card {
         background-color: var(--card-bg);
@@ -83,7 +85,90 @@
       .tc-content p, .tc-content li {
         color: var(--text-secondary);
       }
+      .navbar {
+        background-color: rgba(14, 14, 14, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        height: var(--navbar-height);
+        border-bottom: 1px solid #2a2a2a;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1030;
+      }
+      .navbar-brand img {
+        height: 30px;
+        margin-right: 10px;
+      }
+      .navbar-text {
+        font-size: 0.9rem;
+        padding: 0.25rem 0.75rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        margin-left: 10px;
+      }
+      .user-badge {
+        background-color: rgba(235, 85, 40, 0.15);
+        border: 1px solid rgba(235, 85, 40, 0.3);
+        color: var(--accent-color);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        margin-left: 10px;
+      }
+      .user-badge i {
+        margin-right: 5px;
+      }
+      .balance-badge {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-left: 10px;
+        display: inline-flex;
+        align-items: center;
+      }
+      .balance-badge i {
+        margin-right: 5px;
+        color: var(--accent-color);
+      }
+      .app-logo {
+        height: 80px;
+      }
     </style>
+    
+    <!-- Fixed Navigation Bar -->
+    <nav class="navbar">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <img src="/assets/your-logo.png" alt="FREEOS to LIFT" />
+          <span>FREEOS to LIFT</span>
+        </a>
+        <div class="d-flex align-items-center">
+          <div id="navBarAccountInfo" style="display: none;">
+            <div class="user-badge">
+              <i class="fas fa-user-circle"></i>
+              <span id="nav_proton_account">Not connected</span>
+            </div>
+            <div class="balance-badge">
+              <i class="fas fa-coins"></i>
+              <span id="nav_proton_balance">0</span> FREEOS
+            </div>
+          </div>
+          <button id="navConnectBtn" class="btn btn-sm btn-outline-light ms-2">
+            <i class="fas fa-plug me-1"></i>Connect
+          </button>
+        </div>
+      </div>
+    </nav>
+    
     <div class="container py-5">
       <header class="text-center mb-5">
         <!-- Add your logo here - replace 'your-logo.png' with your actual file name -->

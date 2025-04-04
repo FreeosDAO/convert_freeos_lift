@@ -648,12 +648,27 @@ function toggleHelpPage() {
   const helpPageContainer = document.getElementById('helpPageContainer');
   const helpBtn = document.getElementById('navHelpBtn');
   
-  if (helpPageContainer.style.display === 'none') {
+  console.log('Toggle help page. Current display:', helpPageContainer.style.display);
+  console.log('Computed style:', window.getComputedStyle(helpPageContainer).display);
+  
+  // Check if help page is currently hidden (either by style.display='none' or computed style)
+  const isHelpHidden = helpPageContainer.style.display === 'none' || 
+                        window.getComputedStyle(helpPageContainer).display === 'none';
+  
+  if (isHelpHidden) {
+    console.log('Showing help page');
     // Show help page, hide main content
     mainContent.style.display = 'none';
+    
+    // Recreate the help page content to ensure it has the latest changes
+    const helpPageElement = HelpPage();
+    helpPageContainer.innerHTML = '';
+    helpPageContainer.appendChild(renderHelpPage(helpPageElement));
+    
     helpPageContainer.style.display = 'block';
     helpBtn.innerHTML = '<i class="fas fa-home me-1"></i>Home';
   } else {
+    console.log('Hiding help page');
     // Show main content, hide help page
     mainContent.style.display = 'block';
     helpPageContainer.style.display = 'none';

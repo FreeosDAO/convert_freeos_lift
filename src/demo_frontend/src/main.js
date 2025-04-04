@@ -800,10 +800,16 @@ function renderHelpPage(component) {
   imagesCardBody.className = 'card-body';
   imagesCard.appendChild(imagesCardBody);
   
+  // Add a header for the visual guide with instructions
+  const imagesIntro = document.createElement('p');
+  imagesIntro.className = 'text-muted mb-4';
+  imagesIntro.innerHTML = 'Click any image to view it in full size. <i class="fas fa-search-plus"></i>';
+  imagesCardBody.appendChild(imagesIntro);
+  
   // Add each image
   component.manualImages.forEach(image => {
     const imageContainer = document.createElement('div');
-    imageContainer.className = 'manual-image-container mb-4';
+    imageContainer.className = 'manual-image-container';
     
     const img = document.createElement('img');
     img.src = image.src;

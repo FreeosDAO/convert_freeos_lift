@@ -811,9 +811,19 @@ function renderHelpPage(component) {
     img.className = 'img-fluid rounded mb-2';
     img.loading = 'lazy'; // Add lazy loading for better performance
     img.onerror = function() {
-      this.src = '/assets/your-logo.png';
-      this.style.opacity = '0.5';
-      this.title = 'Image could not be loaded';
+      // Try alternative paths if the image doesn't load
+      if (this.src.startsWith('/manual/')) {
+        // Try with assets prefix
+        this.src = '/assets' + this.src;
+      } else if (this.src.startsWith('/assets/manual/')) {
+        // Try without assets prefix
+        this.src = this.src.replace('/assets/manual/', '/manual/');
+      } else {
+        // Fallback to logo
+        this.src = '/your-logo.png';
+        this.style.opacity = '0.5';
+        this.title = 'Image could not be loaded';
+      }
     };
     
     // Add click handler to open image in full view

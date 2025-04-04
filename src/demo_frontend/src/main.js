@@ -4,16 +4,16 @@
 
 import { demo_backend } from "../../declarations/demo_backend";
 import ProtonWebSDK from '@proton/web-sdk';
-import { AuthClient } from '@dfinity/auth-client';
 import { JsonRpc, Api } from 'eosjs';
+import { termsAndConditionsText } from './termsandconditions.js';
+import { marked } from 'marked';
 
-let signedIn = false;
-let client;
 let principal = '';
 let proton_account = '';
 let chain = 'dfinity';
 let btc_price = 0;
 let link, session;
+let principalVerified = false;
 
 // Constants
 const appIdentifier = 'freeosclaim';
@@ -25,7 +25,6 @@ let chainId =
 // mainnet chain ID (commented out)
 // const mainnetChainId = '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0';
 
-// Wait for the DOM to be fully loaded
 // Error recovery helper
 function handleSessionError() {
   // Clear any existing error states
@@ -43,10 +42,54 @@ function handleSessionError() {
   }, 2000);
 }
 
+// Validate a principal ID (basic check)
+function isValidPrincipalId(principalId) {
+  // Basic pattern check for principal IDs
+  // They are typically a series of groups of 5 lowercase characters or numbers separated by dashes
+  const principalPattern = /^[a-z0-9\-]+$/;
+  
+  if (!principalId || principalId.trim() === '') {
+    return false;
+  }
+  
+  // Principals should be alphanumeric with dashes
+  if (!principalPattern.test(principalId)) {
+    return false;
+  }
+  
+  // Principal IDs are usually more than 20 characters long
+  if (principalId.length < 20) {
+    return false;
+  }
+  
+  return true;
+}
+
+// Validate and update UI based on checkbox states
+function updateConvertButtonState() {
+  const detailsConfirmed = document.getElementById('confirmDetailsCheck').checked;
+  const termsAgreed = document.getElementById('termsCheck').checked;
+  const convertBtn = document.getElementById('convertBtn');
+  
+  if (detailsConfirmed && termsAgreed && principalVerified) {
+    convertBtn.disabled = false;
+  } else {
+    convertBtn.disabled = true;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize error recovery state
   window.recoveringFromError = false;
   
+  // Set up event handlers for UI components
+  setupEventHandlers();
+  
+  // Set up Terms and Conditions
+  setupTermsAndConditions();
+});
+
+function setupEventHandlers() {
   // Prevent Enter key from submitting the form
   document.getElementById('amountFreeos')?.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
@@ -55,98 +98,121 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  document
-    .getElementById('protonSignInBtn')
-    .addEventListener('click', async () => {
-      if (window.recoveringFromError) {
-        alert('Please wait a moment before trying again...');
-        return;
+  // Principal ID input and verification
+  document.getElementById('nnsPrincipalInput')?.addEventListener('input', (e) => {
+    const principalInput = e.target.value.trim();
+    const valid = isValidPrincipalId(principalInput);
+    
+    if (valid) {
+      e.target.classList.remove('is-invalid');
+      e.target.classList.add('is-valid');
+    } else {
+      e.target.classList.remove('is-valid');
+      if (principalInput.length > 0) {
+        e.target.classList.add('is-invalid');
+      } else {
+        e.target.classList.remove('is-invalid');
       }
-      
-      try {
-        // Create link
-        // await login({ restoreSession: false });
-        await login(false);
+    }
+  });
+  
+  document.getElementById('verifyPrincipalBtn')?.addEventListener('click', () => {
+    const principalInput = document.getElementById('nnsPrincipalInput').value.trim();
+    verifyPrincipalId(principalInput);
+  });
+  
+  // Checkbox event listeners
+  document.getElementById('confirmDetailsCheck')?.addEventListener('change', updateConvertButtonState);
+  document.getElementById('termsCheck')?.addEventListener('change', updateConvertButtonState);
+  
+  // Proton sign in button
+  document.getElementById('protonSignInBtn')?.addEventListener('click', handleProtonSignIn);
+  
+  // Convert button
+  document.getElementById('convertBtn')?.addEventListener('click', handleConvertButtonClick);
+  
+  // Debug button
+  document.getElementById('showVariablesBtn')?.addEventListener('click', showVariables);
+}
 
-        if (session) {
-          // console.log('User authorization:', session.auth); // { actor: 'fred', permission: 'active }
-          proton_account = session.auth.actor;
-          document.getElementById('proton_account').innerText =
-            session.auth.actor;
-            
-          // Show balance card when logged into Proton
-          document.getElementById('balanceCard').style.display = 'block';
-          
-          // Update balances
-          updateBalances();
-          
-          // Set up auto-refresh of balances every 30 seconds
-          if (!window.balanceInterval) {
-            window.balanceInterval = setInterval(updateBalances, 30000);
-          }
-        } else {
-          console.log('No Proton session established');
-        }
+function setupTermsAndConditions() {
+  const termsLink = document.getElementById('termsLink');
+  const termsModal = new bootstrap.Modal(document.getElementById('termsModal'));
+  const termsContent = document.getElementById('termsContent');
+  const acceptTermsBtn = document.getElementById('acceptTermsBtn');
+  
+  // Render markdown terms to HTML
+  termsContent.innerHTML = marked.parse(termsAndConditionsText);
+  
+  termsLink?.addEventListener('click', (e) => {
+    e.preventDefault();
+    termsModal.show();
+  });
+  
+  acceptTermsBtn?.addEventListener('click', () => {
+    const termsCheck = document.getElementById('termsCheck');
+    termsCheck.checked = true;
+    updateConvertButtonState();
+  });
+}
 
-        showFunctionTable();
-      } catch (loginError) {
-        console.error('Login error:', loginError);
-        alert('Error connecting to XPR Network: ' + (loginError.message || 'Unknown error'));
-        handleSessionError();
-      }
-    });
+async function handleProtonSignIn() {
+  if (window.recoveringFromError) {
+    alert('Please wait a moment before trying again...');
+    return;
+  }
+  
+  try {
+    await login(false);
 
-  document
-    .getElementById('dfinitySignInBtn')
-    .addEventListener('click', async () => {
-      if (window.recoveringFromError) {
-        alert('Please wait a moment before trying again...');
-        return;
-      }
-      
-      try {
-        client = await AuthClient.create();
-        const isAuthenticated = await client.isAuthenticated();
-
-        if (isAuthenticated) {
-          const identity = client.getIdentity();
-          principal = identity.getPrincipal().toString();
-          console.log('Auth. already authenticated. principal = ' + principal);
-          signedIn = true;
-          
-          document.getElementById('principal_id').innerText = principal;
-          showFunctionTable();
-          return;
-        }
-
-        const result = await new Promise((resolve, reject) => {
-          client.login({
-            identityProvider: 'https://identity.ic0.app',
-            onSuccess: () => {
-              const identity = client.getIdentity();
-              const principal = identity.getPrincipal().toString();
-              resolve({ identity, principal });
-            },
-            onError: (error) => {
-              console.error('II login error:', error);
-              reject(new Error('Internet Identity login failed'));
-            },
-          });
-        });
+    if (session) {
+      proton_account = session.auth.actor;
+      document.getElementById('proton_account').innerText = session.auth.actor;
         
-        principal = result.principal;
-        console.log('Auth. signed in. principal = ' + principal);
-        signedIn = true;
-
-        document.getElementById('principal_id').innerText = principal;
-        showFunctionTable();
-      } catch (error) {
-        console.error('Internet Computer login error:', error);
-        alert('Error connecting to Internet Computer: ' + (error.message || 'Unknown error'));
-        handleSessionError();
+      // Show balance card and NNS instructions when logged into Proton
+      document.getElementById('balanceCard').style.display = 'block';
+      document.getElementById('nnsInstructionsCard').style.display = 'block';
+      
+      // Update balances
+      updateBalances();
+      
+      // Set up auto-refresh of balances every 30 seconds
+      if (!window.balanceInterval) {
+        window.balanceInterval = setInterval(updateBalances, 30000);
       }
-    });
-});
+    } else {
+      console.log('No Proton session established');
+    }
+  } catch (loginError) {
+    console.error('Login error:', loginError);
+    alert('Error connecting to XPR Network: ' + (loginError.message || 'Unknown error'));
+    handleSessionError();
+  }
+}
+
+// Verify Principal ID and update UI
+function verifyPrincipalId(inputPrincipal) {
+  if (!isValidPrincipalId(inputPrincipal)) {
+    alert('Please enter a valid NNS Principal ID');
+    principalVerified = false;
+    updateConvertButtonState();
+    return;
+  }
+  
+  // Set as verified (in a real app, you might want to check this against the IC network)
+  principal = inputPrincipal;
+  principalVerified = true;
+  
+  // Update the UI
+  document.getElementById('displayPrincipalId').textContent = principal;
+  document.getElementById('convertFormCard').style.display = 'block';
+  
+  // Scroll to the conversion form
+  document.getElementById('convertFormCard').scrollIntoView({ behavior: 'smooth' });
+  
+  // Update button state
+  updateConvertButtonState();
+}
 
 const login = async (restoreSession) => {
   try {
@@ -290,7 +356,6 @@ async function getBTCPrice() {
 async function updateBalances() {
   console.log('Proton account = >' + proton_account + '<');
   let proton_balance_str = '0';
-  let ic_balance_str = '0';
 
   try {
     // First ensure we have a working RPC connection
@@ -361,19 +426,12 @@ async function updateBalances() {
         }
       }
     }
-
-    // IC balance
-    if (principal !== '') {
-      ic_balance_str = await demo_backend.get_balance(proton_account);
-    }
     
     // Store previous values to check for changes
     const prevProtonBalance = document.getElementById('proton_balance').innerText;
-    const prevIcBalance = document.getElementById('ic_balance').innerText;
     
     // Update display
     document.getElementById('proton_balance').innerText = proton_balance_str;
-    document.getElementById('ic_balance').innerText = ic_balance_str;
     
     // Add highlight animation if values changed
     if (prevProtonBalance !== proton_balance_str) {
@@ -384,24 +442,22 @@ async function updateBalances() {
       protonBalanceBox.classList.add('highlight');
     }
     
-    if (prevIcBalance !== ic_balance_str) {
-      const icBalanceBox = document.getElementById('ic_balance').closest('.balance-box');
-      icBalanceBox.classList.remove('highlight');
-      // Force DOM reflow
-      void icBalanceBox.offsetWidth; 
-      icBalanceBox.classList.add('highlight');
-    }
-    
   } catch (error) {
     console.error('Error updating balances:', error);
   }
 }
 
-document.getElementById('convertBtn').addEventListener('click', async (event) => {
+async function handleConvertButtonClick(event) {
   // Prevent any default form submission behavior
   if (event) {
     event.preventDefault();
     event.stopPropagation();
+  }
+  
+  // Double-check that principal is verified
+  if (!principalVerified) {
+    alert('Please verify your NNS Principal ID first');
+    return;
   }
   
   // Get the amount the user wants to transfer
@@ -469,7 +525,7 @@ document.getElementById('convertBtn').addEventListener('click', async (event) =>
     console.log(`Formatting transfer amount from ${userAmount} to ${freeos_quantity}`);
 
     // Show user what's happening
-    const confirmMessage = `You are about to convert ${userAmount} FREEOS to LIFT.\n\nDo you want to proceed?`;
+    const confirmMessage = `You are about to convert ${userAmount} FREEOS to LIFT.\n\nYour NNS Principal ID is: ${principal}\n\nPlease confirm this is correct before proceeding.`;
     if (!confirm(confirmMessage)) {
       return;
     }
@@ -503,6 +559,13 @@ document.getElementById('convertBtn').addEventListener('click', async (event) =>
       
       // Update balances after transfer
       updateBalances();
+      
+      // Reset form
+      document.getElementById('amountFreeos').value = '';
+      document.getElementById('confirmDetailsCheck').checked = false;
+      document.getElementById('termsCheck').checked = false;
+      document.getElementById('convertBtn').disabled = true;
+      
     } catch (txError) {
       console.error('Transaction error:', txError);
       
@@ -529,64 +592,7 @@ document.getElementById('convertBtn').addEventListener('click', async (event) =>
     console.error('Pre-transaction error:', error);
     alert('Error preparing transaction: ' + (error.message || 'Unknown error'));
   }
-});
-
-function showFunctionTable() {
-  if (principal !== '' && proton_account !== '') {
-    console.log('Making functionTable visible');
-    document.getElementById('functionTable').style.display = 'block';
-  } else {
-    console.log('Making functionTable hidden');
-    document.getElementById('functionTable').style.display = 'none';
-  }
-  
-  // Control balance card visibility - only show if logged into Proton
-  if (proton_account !== '') {
-    document.getElementById('balanceCard').style.display = 'block';
-  } else {
-    document.getElementById('balanceCard').style.display = 'none';
-    
-    // Clear interval if Proton disconnected
-    if (window.balanceInterval) {
-      clearInterval(window.balanceInterval);
-      window.balanceInterval = null;
-    }
-  }
 }
-
-async function createLink({ restoreSession }) {
-  const result = await ConnectWallet({
-    linkOptions: {
-      endpoints: ['https://testnet.protonchain.com'],
-      restoreSession,
-    },
-    transportOptions: {
-      requestAccount: 'tommccann4', // Your proton account
-      requestStatus: true,
-    },
-    selectorOptions: {
-      appName: 'dfinity',
-      appLogo: 'https://freeos.io/freeos-appLogo.svg?v=3',
-      customStyleOptions: {
-        modalBackgroundColor: '#F4F7FA',
-        logoBackgroundColor: 'white',
-        isLogoRound: true,
-        optionBackgroundColor: 'white',
-        optionFontColor: 'black',
-        primaryFontColor: 'black',
-        secondaryFontColor: '#6B727F',
-        linkColor: '#752EEB',
-      },
-    },
-  });
-  link = result.link;
-  session = result.session;
-  proton_account = session.auth.actor;
-}
-
-document
-  .getElementById('showVariablesBtn')
-  .addEventListener('click', showVariables);
 
 function showVariables() {
   console.log(

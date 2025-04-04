@@ -45,6 +45,44 @@
         background-color: var(--accent-color);
         border-color: var(--accent-color);
       }
+      .steps-container {
+        background-color: rgba(235, 85, 40, 0.1);
+        border-left: 3px solid var(--accent-color);
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+      .steps-container ol {
+        margin-bottom: 0;
+        padding-left: 1.5rem;
+      }
+      .highlight-text {
+        color: var(--accent-color);
+        font-weight: bold;
+      }
+      .principal-input {
+        font-family: monospace;
+        letter-spacing: 0.5px;
+      }
+      .tc-modal .modal-content {
+        background-color: var(--card-bg);
+        color: var(--text-primary);
+      }
+      .tc-modal .modal-header {
+        border-bottom-color: #2a2a2a;
+      }
+      .tc-modal .modal-footer {
+        border-top-color: #2a2a2a;
+      }
+      .tc-content {
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+      .tc-content h1, .tc-content h2, .tc-content h3, .tc-content h4 {
+        color: var(--text-primary);
+      }
+      .tc-content p, .tc-content li {
+        color: var(--text-secondary);
+      }
     </style>
     <div class="container py-5">
       <header class="text-center mb-5">
@@ -58,30 +96,16 @@
         <div class="col-md-8">
           <div class="card shadow-sm mb-4">
             <div class="card-header bg-light">
-              <h5 class="card-title mb-0">Connect Your Accounts</h5>
+              <h5 class="card-title mb-0">Connect Your XPR Network Wallet</h5>
             </div>
             <div class="card-body">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <div class="d-grid">
-                    <button id="dfinitySignInBtn" class="btn btn-primary btn-lg">
-                      <i class="fas fa-plug me-2"></i>Connect Internet Computer
-                    </button>
-                  </div>
-                  <div class="mt-2 text-center response-container">
-                    <span class="badge bg-light text-dark" id="principal_id"></span>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="d-grid">
-                    <button id="protonSignInBtn" class="btn btn-success btn-lg">
-                      <i class="fas fa-plug me-2"></i>Connect XPR Network
-                    </button>
-                  </div>
-                  <div class="mt-2 text-center response-container">
-                    <span class="badge bg-light text-dark" id="proton_account"></span>
-                  </div>
-                </div>
+              <div class="d-grid">
+                <button id="protonSignInBtn" class="btn btn-success btn-lg">
+                  <i class="fas fa-plug me-2"></i>Connect XPR Network
+                </button>
+              </div>
+              <div class="mt-2 text-center response-container">
+                <span class="badge bg-light text-dark" id="proton_account"></span>
               </div>
             </div>
           </div>
@@ -89,28 +113,57 @@
           <!-- Balance Display -->
           <div class="card shadow-sm mb-4" id="balanceCard" style="display: none;">
             <div class="card-header bg-light">
-              <h5 class="card-title mb-0">Your Balances</h5>
+              <h5 class="card-title mb-0">Your FREEOS Balance</h5>
             </div>
             <div class="card-body">
-              <div class="row text-center">
-                <div class="col-md-6">
-                  <div class="balance-box">
-                    <h6>FREEOS Balance</h6>
-                    <h2 id="proton_balance">0</h2>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="balance-box">
-                    <h6>LIFT Balance (pending)</h6>
-                    <h2 id="ic_balance">0</h2>
-                  </div>
+              <div class="text-center">
+                <div class="balance-box">
+                  <h6>FREEOS Balance</h6>
+                  <h2 id="proton_balance">0</h2>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- NNS Principal Information Card -->
+          <div class="card shadow-sm mb-4" id="nnsInstructionsCard" style="display: none;">
+            <div class="card-header bg-light">
+              <h5 class="card-title mb-0">Provide Your NNS Principal ID</h5>
+            </div>
+            <div class="card-body">
+              <p>To complete your FREEOS to LIFT conversion, we need your NNS Principal ID from the Internet Computer.</p>
+              
+              <div class="steps-container">
+                <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Follow these steps to get your NNS Principal ID:</h6>
+                <ol>
+                  <li>Visit the <a href="https://nns.ic0.app/" target="_blank" class="text-light">NNS App <i class="fas fa-external-link-alt fa-xs"></i></a></li>
+                  <li>Sign in with your Internet Identity</li>
+                  <li>Click on your profile icon in the top right corner</li>
+                  <li>Copy your Principal ID</li>
+                  <li>Return to this page and paste your Principal ID below</li>
+                </ol>
+              </div>
+              
+              <div class="mb-4">
+                <label for="nnsPrincipalInput" class="form-label">Your NNS Principal ID:</label>
+                <div class="input-group">
+                  <input 
+                    type="text" 
+                    id="nnsPrincipalInput" 
+                    class="form-control form-control-lg principal-input"
+                    placeholder="e.g., x4kvl-zvcjh-44iw7-..."
+                  />
+                  <button class="btn btn-outline-secondary" type="button" id="verifyPrincipalBtn">
+                    <i class="fas fa-check-circle"></i>
+                  </button>
+                </div>
+                <div class="form-text">This is where your LIFT tokens will be staked. Double-check to ensure this is correct.</div>
+              </div>
+            </div>
+          </div>
+
           <!-- Conversion Form -->
-          <div class="card shadow-sm" id="functionTable" style="display: none;">
+          <div class="card shadow-sm" id="convertFormCard" style="display: none;">
             <div class="card-header bg-light">
               <h5 class="card-title mb-0">Convert FREEOS to LIFT</h5>
             </div>
@@ -130,11 +183,37 @@
                     />
                     <span class="input-group-text">FREEOS</span>
                   </div>
-                  <div class="form-text">Simply enter a whole number or decimal value (e.g. 5 or 10.5). The system will automatically format with the required decimal precision.</div>
+                  <div class="form-text">Enter a whole number or decimal value (e.g. 5 or 10.5).</div>
+                </div>
+                
+                <div class="alert alert-warning" role="alert">
+                  <div class="d-flex">
+                    <div class="me-3">
+                      <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                    <div>
+                      <h6 class="alert-heading">Important</h6>
+                      <p class="mb-0">You are sending FREEOS to be converted to LIFT tokens for the NNS Principal ID: <span id="displayPrincipalId" class="highlight-text">-</span></p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" id="confirmDetailsCheck">
+                  <label class="form-check-label" for="confirmDetailsCheck">
+                    I confirm that all details are correct, including my NNS Principal ID
+                  </label>
+                </div>
+                
+                <div class="form-check mb-4">
+                  <input class="form-check-input" type="checkbox" id="termsCheck">
+                  <label class="form-check-label" for="termsCheck">
+                    I agree to the <a href="#" id="termsLink">Terms and Conditions</a>
+                  </label>
                 </div>
                 
                 <div class="d-grid">
-                  <button type="button" id="convertBtn" class="btn btn-primary btn-lg">
+                  <button type="button" id="convertBtn" class="btn btn-primary btn-lg" disabled>
                     <i class="fas fa-exchange-alt me-2"></i>Convert to LIFT
                   </button>
                 </div>
@@ -145,6 +224,27 @@
           <button id="showVariablesBtn" class="btn btn-sm btn-outline-secondary mt-3" style="display: none">
             Show Variables
           </button>
+        </div>
+      </div>
+      
+      <!-- Terms and Conditions Modal -->
+      <div class="modal fade tc-modal" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="tc-content" id="termsContent">
+                <!-- Terms content will be loaded here -->
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="acceptTermsBtn" data-bs-dismiss="modal">I Accept</button>
+            </div>
+          </div>
         </div>
       </div>
       
